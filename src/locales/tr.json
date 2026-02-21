@@ -12,8 +12,9 @@
     "confirm_delete": "Emin misiniz?",
     "error": "Hata",
     "success": "Başarılı",
-    "select_all": "Tümünü Seç",
-    "me": "Ben"
+    "select_all": "Hepsini Seç",
+    "me": "Ben",
+    "confirm_delete_group": "Bu grubu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
   },
   "auth": {
     "login_title": "Split'e Giriş Yap",
@@ -33,8 +34,9 @@
     "description": "Harcama gruplarınızı yönetin ve yeni harcamalar ekleyin.",
     "new_group": "Yeni Grup Oluştur",
     "no_groups": "Hiç grubunuz yok",
-    "no_groups_desc": "Hemen yeni bir grup oluşturarak harcamalarınızı bölüşmeye başlayın.",
-    "created_at": "tarihinde oluşturuldu"
+    "no_groups_desc": "Hemen yeni bir grup oluşturarak harcamaları bölüşmeye başlayın.",
+    "created_at": "oluşturulma tarihi",
+    "past_groups": "Geçmiş Harcama Grupları"
   },
   "group_details": {
     "participants": "Katılımcılar",
@@ -76,8 +78,9 @@
     "auth_required": "Oturum açmanız gerekiyor.",
     "group_create_error": "Grup oluşturulamadı",
     "member_add_error": "Katılımcı eklenemedi",
-    "login_failed": "Belirtilen bilgiler hatalı veya e-posta onaylanmamış.",
-    "register_failed": "Kayıt oluşturulamadı"
+    "login_failed": "Geçersiz bilgiler veya e-posta onaylanmamış.",
+    "register_failed": "Hesap oluşturulamadı",
+    "group_delete_error": "Grup silinemedi"
   },
   "navbar": {
     "groups": "Gruplar",

@@ -60,6 +60,13 @@ export const guestStorage = {
     return newGroup;
   },
 
+  deleteGroup: (id: string) => {
+    const groups = guestStorage.getGroups();
+    const updatedGroups = groups.filter(g => g.id !== id);
+    guestStorage.saveGroups(updatedGroups);
+    return { success: true };
+  },
+
   getGroup: (id: string): GuestGroup | undefined => {
     const group = guestStorage.getGroups().find(g => g.id === id);
     if (group && group.participants.length === 0) {

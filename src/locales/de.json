@@ -13,7 +13,8 @@
     "error": "Fehler",
     "success": "Erfolgreich",
     "select_all": "Alle auswählen",
-    "me": "Ich"
+    "me": "Ich",
+    "confirm_delete_group": "Sind Sie sicher, dass Sie diese Gruppe löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
   },
   "auth": {
     "login_title": "Bei Split anmelden",
@@ -33,8 +34,9 @@
     "description": "Verwalte deine Gruppen und füge Ausgaben hinzu.",
     "new_group": "Neue Gruppe erstellen",
     "no_groups": "Du hast noch keine Gruppen",
-    "no_groups_desc": "Erstelle eine Gruppe, um Ausgaben zu teilen.",
-    "created_at": "erstellt am"
+    "no_groups_desc": "Beginnen Sie jetzt mit dem Teilen von Ausgaben, indem Sie eine neue Gruppe erstellen.",
+    "created_at": "erstellt am",
+    "past_groups": "Vergangene Ausgabengruppen"
   },
   "group_details": {
     "participants": "Teilnehmer",
@@ -76,8 +78,9 @@
     "auth_required": "Anmeldung erforderlich.",
     "group_create_error": "Gruppe konnte nicht erstellt werden",
     "member_add_error": "Teilnehmer konnte nicht hinzugefügt werden",
-    "login_failed": "Ungültige Anmeldedaten oder E-Mail nicht bestätigt.",
-    "register_failed": "Konto konnte nicht erstellt werden"
+    "login_failed": "Ungültige Zugangsdaten oder E-Mail nicht bestätigt.",
+    "register_failed": "Konto konnte nicht erstellt werden",
+    "group_delete_error": "Gruppe konnte nicht gelöscht werden"
   },
   "navbar": {
     "groups": "Gruppen",

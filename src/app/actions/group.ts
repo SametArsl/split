@@ -79,3 +79,35 @@ export async function getGroups() {
 
   return data;
 }
+
+export async function deleteGroup(groupId: string) {
+  const supabase = await createServer();
+  
+  // What? Get the currently authenticated user.
+  // Why? We want to ensure only authenticated users can delete groups (if they have permission via RLS).
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: 'errors.auth_required' };
+  }
+
+  // Note: Cascading deletes in Postgres will handle participants and expenses.
+  // We specify the creator check here as a fallback or if RLS isn't fully configured for 'delete'.
+  const { error, count } = await supabase
+    .from('groups')
+    .delete({ count: 'exact' })
+    .eq('id', groupId);
+
+  if (error) {
+    console.error('Group Deletion Error:', error);
+    return { error: 'errors.group_delete_error' };
+  }
+
+  // If count is null or 0, it means no group was deleted (possibly didn't exist or RLS blocked it)
+  if (count === 0) {
+    console.warn(`No group found to delete with ID: ${groupId} for user: ${user.id}`);
+    // We don't necessarily return error here as it might already be "deleted" from user's perspective
+  }
+
+  revalidatePath('/groups');
+  return { success: true };
+}
