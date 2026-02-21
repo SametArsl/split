@@ -1,7 +1,6 @@
 "use client"
 
-// What? Client component for submitting a new expense.
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,13 +19,20 @@ import {
 } from '@/components/ui/form';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
 import { useTranslation } from '@/context/language-context';
+import { guestStorage } from '@/lib/guest-storage';
+import { cn } from '@/lib/utils';
+import { Checkbox } from "@/components/ui/checkbox"
+import { Check, Users, ChevronDown } from 'lucide-react';
 
-export function ExpenseForm({ groupId, participants }: { groupId: string, participants: any[] }) {
+export function ExpenseForm({ groupId, participants, isGuest }: { groupId: string, participants: any[], isGuest?: boolean }) {
   const { setExpenseModalOpen, editingExpense, setEditingExpense } = useUiStore();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
+
+  const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
+    editingExpense?.splits?.map((s: any) => s.participant_id) || participants.map(p => p.id)
+  );
 
   const isEditMode = !!editingExpense;
 
@@ -40,7 +46,6 @@ export function ExpenseForm({ groupId, participants }: { groupId: string, partic
     },
   });
 
-  // What? Reset form when editingExpense changes (e.g., clicking edit on another expense)
   useEffect(() => {
     if (editingExpense) {
       form.reset({
@@ -49,6 +54,7 @@ export function ExpenseForm({ groupId, participants }: { groupId: string, partic
         currency: (editingExpense.currency || 'TRY') as any,
         payerId: editingExpense.payer_id || participants[0]?.id,
       });
+      setSelectedParticipants(editingExpense.splits?.map((s: any) => s.participant_id) || participants.map(p => p.id));
     } else {
       form.reset({
         description: '',
@@ -56,45 +62,36 @@ export function ExpenseForm({ groupId, participants }: { groupId: string, partic
         currency: 'TRY' as any,
         payerId: participants[0]?.id || '',
       });
+      setSelectedParticipants(participants.map(p => p.id));
     }
   }, [editingExpense, form, participants]);
 
-  const addExpenseMutation = useMutation({
-    mutationFn: async (data: ExpenseFormValues) => await addExpense(groupId, data),
-    onMutate: async (newExpense) => {
-      await queryClient.cancelQueries({ queryKey: ['group', groupId] });
-      const previousData = queryClient.getQueryData(['group', groupId]);
+  const toggleParticipant = (id: string) => {
+    setSelectedParticipants((prev: string[]) => 
+      prev.includes(id) 
+        ? prev.length > 1 ? prev.filter((p: string) => p !== id) : prev
+        : [...prev, id]
+    );
+  };
 
-      if (previousData) {
-        queryClient.setQueryData(['group', groupId], (old: any) => ({
-          ...old,
-          expenses: [
-            {
-              id: Math.random().toString(),
-              description: newExpense.description,
-              amount: newExpense.amount * 100, // naive conversion strictly for optimistic UI
-              currency: newExpense.currency,
-              group_id: groupId,
-              payer_id: newExpense.payerId,
-              payer: participants.find(p => p.id === newExpense.payerId) || { display_name: 'Unknown' },
-              created_at: new Date().toISOString()
-            },
-            ...(old.expenses || []) // Prepend assuming newest first
-          ]
-        }));
-      }
-      return { previousData };
+  const addExpenseMutation = useMutation({
+    mutationFn: async (data: ExpenseFormValues) => {
+        if (isGuest) {
+            return guestStorage.addExpense(groupId, {
+                description: data.description,
+                amount: Math.round(data.amount * 100),
+                currency: data.currency,
+                payer_id: data.payerId,
+                splits: data.splits?.map((s: any) => ({
+                    participant_id: s.participantId,
+                    amount_owed: s.amountOwed
+                })) || []
+            });
+        }
+        return await addExpense(groupId, data);
     },
-    onError: (err, newExpense, context) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(['group', groupId], context.previousData);
-      }
-      alert(t('common.error'));
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['group', groupId] });
-    },
-    onSuccess: (result) => {
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['group', groupId] }),
+    onSuccess: (result: any) => {
       if (result?.error) {
          alert(t(result.error));
       } else {
@@ -105,53 +102,23 @@ export function ExpenseForm({ groupId, participants }: { groupId: string, partic
   });
 
   const updateExpenseMutation = useMutation({
-    mutationFn: async (data: ExpenseFormValues) => await updateExpense(groupId, editingExpense.id, data),
-    onMutate: async (newExpense) => {
-      await queryClient.cancelQueries({ queryKey: ['group', groupId] });
-      const previousData = queryClient.getQueryData(['group', groupId]);
-
-      if (previousData) {
-        queryClient.setQueryData(['group', groupId], (old: any) => {
-          const amountInCents = Math.round(newExpense.amount * 100);
-          const splitAmount = old.participants && old.participants.length > 0
-            ? Math.round(amountInCents / old.participants.length)
-            : 0;
-            
-          return {
-            ...old,
-            expenses: old.expenses.map((exp: any) => 
-              exp.id === editingExpense.id 
-                ? {
-                    ...exp,
-                    description: newExpense.description,
-                    amount: amountInCents,
-                    currency: newExpense.currency,
-                    payer_id: newExpense.payerId,
-                    payer: participants.find(p => p.id === newExpense.payerId) || exp.payer,
-                    // Optimistically recalculate equal splits
-                    splits: old.participants.map((p: any) => ({
-                      expense_id: exp.id,
-                      participant_id: p.id,
-                      amount_owed: splitAmount
-                    }))
-                  }
-                : exp
-            )
-          };
-        });
-      }
-      return { previousData };
+    mutationFn: async (data: ExpenseFormValues) => {
+        if (isGuest) {
+            return guestStorage.updateExpense(groupId, editingExpense.id, {
+                description: data.description,
+                amount: Math.round(data.amount * 100),
+                currency: data.currency,
+                payer_id: data.payerId,
+                splits: data.splits?.map((s: any) => ({
+                    participant_id: s.participantId,
+                    amount_owed: s.amountOwed
+                })) || []
+            });
+        }
+        return await updateExpense(groupId, editingExpense.id, data);
     },
-    onError: (err, newExpense, context) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(['group', groupId], context.previousData);
-      }
-      alert(t('common.error'));
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['group', groupId] });
-    },
-    onSuccess: (result) => {
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['group', groupId] }),
+    onSuccess: (result: any) => {
       if (result?.error) {
          alert(t(result.error));
       } else {
@@ -163,6 +130,15 @@ export function ExpenseForm({ groupId, participants }: { groupId: string, partic
   });
 
   async function onSubmit(data: ExpenseFormValues) {
+    const amountInCents = Math.round(data.amount * 100);
+    const splitAmount = Math.round(amountInCents / selectedParticipants.length);
+    
+    // Construct splits array
+    data.splits = selectedParticipants.map((pid: string) => ({
+        participantId: pid,
+        amountOwed: splitAmount / 100 // Send as float for schema
+    }));
+
     if (isEditMode) {
       updateExpenseMutation.mutate(data);
     } else {
@@ -170,39 +146,32 @@ export function ExpenseForm({ groupId, participants }: { groupId: string, partic
     }
   }
 
-  const handleOpenChange = (isOpen: boolean) => {
-    setExpenseModalOpen(isOpen);
-    if (!isOpen) {
-      setTimeout(() => setEditingExpense(null), 200); // Clear on close animation end
-    }
-  };
-
   const isPending = addExpenseMutation.isPending || updateExpenseMutation.isPending;
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('forms.expense_description')}</FormLabel>
+              <FormLabel className="text-foreground font-semibold">{t('forms.expense_description')}</FormLabel>
               <FormControl>
-                <Input placeholder={t('forms.expense_placeholder')} {...field} />
+                <Input placeholder={t('forms.expense_placeholder')} {...field} className="h-12 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500/20" />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         
-        <div className="flex items-end gap-3 sm:gap-4">
+        <div className="flex items-end gap-4">
           <FormField
             control={form.control}
             name="amount"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>{t('forms.amount')}</FormLabel>
+                <FormLabel className="text-foreground font-semibold">{t('forms.amount')}</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
@@ -210,7 +179,7 @@ export function ExpenseForm({ groupId, participants }: { groupId: string, partic
                     placeholder="0.00" 
                     {...field} 
                     onChange={e => field.onChange(parseFloat(e.target.value))} 
-                    className="text-base"
+                    className="h-12 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-lg font-bold"
                   />
                 </FormControl>
                 <FormMessage />
@@ -222,11 +191,11 @@ export function ExpenseForm({ groupId, participants }: { groupId: string, partic
             control={form.control}
             name="currency"
             render={({ field }) => (
-              <FormItem className="w-[100px] sm:w-[120px]">
-                <FormLabel>{t('forms.currency')}</FormLabel>
+              <FormItem className="w-[110px] sm:w-[130px]">
+                <FormLabel className="text-foreground font-semibold">{t('forms.currency')}</FormLabel>
                 <FormControl>
                   <select 
-                    className="flex h-9 w-full rounded-md border border-slate-200 dark:border-slate-700 bg-transparent px-2 sm:px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 dark:focus-visible:ring-slate-300 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-800 dark:text-slate-100" 
+                    className="flex h-12 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-1 text-sm font-bold shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 dark:text-slate-100" 
                     {...field}
                   >
                     <option value="TRY">₺ TRY</option>
@@ -245,10 +214,10 @@ export function ExpenseForm({ groupId, participants }: { groupId: string, partic
           name="payerId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('forms.payer')}</FormLabel>
+              <FormLabel className="text-foreground font-semibold">{t('forms.payer')}</FormLabel>
               <FormControl>
                 <select 
-                  className="w-full p-2 border border-slate-200 dark:border-slate-700 rounded-md bg-transparent dark:bg-slate-800 dark:text-slate-100" 
+                  className="w-full h-12 px-3 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-slate-100 font-medium" 
                   {...field}
                 >
                   {participants.map(p => (
@@ -261,7 +230,59 @@ export function ExpenseForm({ groupId, participants }: { groupId: string, partic
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isPending}>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <FormLabel className="text-foreground font-semibold flex items-center gap-2">
+              <Users size={16} className="text-blue-500" />
+              {t('forms.who_will_pay')}
+            </FormLabel>
+            <button 
+              type="button"
+              onClick={() => setSelectedParticipants(participants.map(p => p.id))}
+              className="text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400"
+            >
+              {t('common.select_all')}
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-2 max-h-[160px] overflow-y-auto p-1 scrollbar-hide border border-slate-100 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50">
+            {participants.map(p => {
+              const isSelected = selectedParticipants.includes(p.id);
+              return (
+                <div 
+                  key={p.id}
+                  onClick={() => toggleParticipant(p.id)}
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all cursor-pointer group",
+                    isSelected
+                      ? "bg-white dark:bg-slate-800 border-blue-200 dark:border-blue-800 shadow-sm"
+                      : "bg-transparent border-transparent opacity-60 hover:opacity-100"
+                  )}
+                >
+                  <Checkbox 
+                    id={`form-participant-${p.id}`}
+                    checked={isSelected}
+                    onCheckedChange={() => toggleParticipant(p.id)}
+                    onClick={(e) => e.stopPropagation()}
+                    className="rounded-md h-4 w-4 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                  />
+                  <span className={cn(
+                    "text-sm font-medium truncate",
+                    isSelected ? "text-foreground" : "text-muted-foreground"
+                  )}>
+                    {p.display_name}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <Button 
+          type="submit" 
+          className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-blue-500/20 hover:shadow-blue-500/30 transition-all active:scale-[0.98] mt-2" 
+          disabled={isPending}
+        >
           {isPending 
             ? t('forms.saving') 
             : isEditMode ? t('common.save') : t('common.add')}

@@ -15,11 +15,38 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { formatCurrency, fromCents } from '@/utils/currency';
 import { calculateSplit, Balance } from '@/utils/calculateSplit';
-import { addGhostUser, getGroupDetails, removeParticipant, removeExpense } from '@/app/actions/expense';
+import { addGhostUser, getGroupDetails, removeParticipant, removeExpense, updateExpenseSplits } from '@/app/actions/expense';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Check, User, Users, ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-export default function GroupClientPage(props: { group: any, participants: any[], expenses: any[] }) {
-  const { group, participants: initialParticipants, expenses: initialExpenses } = props;
+import { guestStorage } from '@/lib/guest-storage';
+
+export default function GroupClientPage({ 
+  group: initialGroup, 
+  participants: initialParticipants, 
+  expenses: initialExpenses,
+  isGuest,
+  groupId
+}: { 
+  group: any, 
+  participants: any[], 
+  expenses: any[],
+  isGuest: boolean,
+  groupId: string
+}) {
   const router = useRouter();
   const { t, language } = useLanguage();
   const { isExpenseModalOpen, setExpenseModalOpen, setEditingExpense, editingExpense } = useUiStore();
@@ -29,9 +56,17 @@ export default function GroupClientPage(props: { group: any, participants: any[]
   // What? Using React Query with initialData from our Server Component fetch.
   // Why? Allows us to perform optimistic updates on the client without losing SEO/Initial Load speed.
   const { data: groupData } = useQuery({
-    queryKey: ['group', group.id],
+    queryKey: ['group', groupId],
     queryFn: async () => {
-      const { participants, expenses } = await getGroupDetails(group.id);
+      if (isGuest) {
+        const localGroup = guestStorage.getGroup(groupId);
+        if (!localGroup) throw new Error('Group not found');
+        return { 
+          participants: localGroup.participants, 
+          expenses: localGroup.expenses 
+        };
+      }
+      const { participants, expenses } = await getGroupDetails(groupId);
       return { participants, expenses };
     },
     initialData: { participants: initialParticipants, expenses: initialExpenses }
@@ -85,100 +120,117 @@ export default function GroupClientPage(props: { group: any, participants: any[]
 
   // What? useMutation for Ghost User creation with optimistic update
   const addGhostMutation = useMutation({
-    mutationFn: async (name: string) => await addGhostUser(group.id, name),
+    mutationFn: async (name: string) => {
+      if (isGuest) return guestStorage.addParticipant(groupId, name);
+      return await addGhostUser(groupId, name);
+    },
     onMutate: async (newName) => {
-      await queryClient.cancelQueries({ queryKey: ['group', group.id] });
-      const previousData = queryClient.getQueryData(['group', group.id]);
+      await queryClient.cancelQueries({ queryKey: ['group', groupId] });
+      const previousData = queryClient.getQueryData(['group', groupId]);
 
-      // Optimistically append the new ghost user
       if (previousData) {
-        queryClient.setQueryData(['group', group.id], (old: any) => ({
+        queryClient.setQueryData(['group', groupId], (old: any) => ({
           ...old,
           participants: [
             ...old.participants, 
-            { id: Math.random().toString(), display_name: newName, group_id: group.id, user_id: null }
+            { id: Math.random().toString(), display_name: newName, group_id: groupId, user_id: null }
           ],
         }));
       }
       return { previousData };
     },
-    onError: (err, newName, context) => {
-      // Rollback on error
-      if (context?.previousData) {
-        queryClient.setQueryData(['group', group.id], context.previousData);
-      }
-    },
     onSettled: () => {
-      // Always refetch to sync with server
-      queryClient.invalidateQueries({ queryKey: ['group', group.id] });
+      queryClient.invalidateQueries({ queryKey: ['group', groupId] });
     }
   });
 
   const removeParticipantMutation = useMutation({
-    mutationFn: async (participantId: string) => await removeParticipant(group.id, participantId),
+    mutationFn: async (participantId: string) => {
+      if (isGuest) return guestStorage.removeParticipant(groupId, participantId);
+      return await removeParticipant(groupId, participantId);
+    },
     onMutate: async (participantId) => {
-      await queryClient.cancelQueries({ queryKey: ['group', group.id] });
-      const previousData = queryClient.getQueryData(['group', group.id]);
-
+      await queryClient.cancelQueries({ queryKey: ['group', groupId] });
+      const previousData = queryClient.getQueryData(['group', groupId]);
       if (previousData) {
-        queryClient.setQueryData(['group', group.id], (old: any) => ({
+        queryClient.setQueryData(['group', groupId], (old: any) => ({
           ...old,
           participants: old.participants.filter((p: any) => p.id !== participantId),
         }));
       }
       return { previousData };
     },
-    onError: (err, participantId, context) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(['group', group.id], context.previousData);
-      }
-      alert(t('group_details.participant_delete_error'));
-    },
-    onSuccess: (result, participantId, context) => {
-      // What? Server Actions return 200 OK even when they fail internally and return `{ error: '...' }`
-      if (result?.error) {
-        // Rollback optimistic update
-        if (context?.previousData) {
-          queryClient.setQueryData(['group', group.id], context.previousData);
-        }
-        alert(t(result.error));
-      }
+    onSuccess: (result: any) => {
+      if (result?.error) alert(t(result.error));
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['group', group.id] });
+      queryClient.invalidateQueries({ queryKey: ['group', groupId] });
     }
   });
 
   const removeExpenseMutation = useMutation({
-    mutationFn: async (expenseId: string) => await removeExpense(group.id, expenseId),
+    mutationFn: async (expenseId: string) => {
+      if (isGuest) return guestStorage.deleteExpense(groupId, expenseId);
+      return await removeExpense(groupId, expenseId);
+    },
     onMutate: async (expenseId) => {
-      await queryClient.cancelQueries({ queryKey: ['group', group.id] });
-      const previousData = queryClient.getQueryData(['group', group.id]);
-
+      await queryClient.cancelQueries({ queryKey: ['group', groupId] });
+      const previousData = queryClient.getQueryData(['group', groupId]);
       if (previousData) {
-        queryClient.setQueryData(['group', group.id], (old: any) => ({
+        queryClient.setQueryData(['group', groupId], (old: any) => ({
           ...old,
           expenses: old.expenses.filter((e: any) => e.id !== expenseId),
         }));
       }
       return { previousData };
     },
-    onError: (err, expenseId, context) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(['group', group.id], context.previousData);
-      }
-      alert(t('group_details.expense_delete_error'));
-    },
-    onSuccess: (result, expenseId, context) => {
-      if (result?.error) {
-        if (context?.previousData) {
-          queryClient.setQueryData(['group', group.id], context.previousData);
-        }
-        alert(t(result.error));
-      }
+    onSuccess: (result: any) => {
+      if (result?.error) alert(t(result.error));
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['group', group.id] });
+      queryClient.invalidateQueries({ queryKey: ['group', groupId] });
+    }
+  });
+
+  const updateSplitsMutation = useMutation({
+    mutationFn: async ({ expenseId, participantIds }: { expenseId: string, participantIds: string[] }) => {
+      if (isGuest) {
+        const expense = expenses.find((e: any) => e.id === expenseId);
+        if (!expense) return;
+        const splitAmount = Math.round(expense.amount / participantIds.length);
+        const newSplits = participantIds.map(pid => ({
+          participant_id: pid,
+          amount_owed: splitAmount
+        }));
+        return guestStorage.updateExpense(groupId, expenseId, { splits: newSplits });
+      }
+      return await updateExpenseSplits(groupId, expenseId, participantIds);
+    },
+    onMutate: async ({ expenseId, participantIds }) => {
+      await queryClient.cancelQueries({ queryKey: ['group', groupId] });
+      const previousData = queryClient.getQueryData(['group', groupId]);
+      if (previousData) {
+        queryClient.setQueryData(['group', groupId], (old: any) => ({
+          ...old,
+          expenses: old.expenses.map((e: any) => {
+            if (e.id === expenseId) {
+              const splitAmount = Math.round(e.amount / participantIds.length);
+              return { 
+                ...e, 
+                splits: participantIds.map(pid => ({ 
+                  participant_id: pid, 
+                  amount_owed: splitAmount 
+                })) 
+              };
+            }
+            return e;
+          }),
+        }));
+      }
+      return { previousData };
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['group', groupId] });
     }
   });
 
@@ -195,34 +247,38 @@ export default function GroupClientPage(props: { group: any, participants: any[]
         <Button 
            variant="ghost" 
            size="sm" 
-           onClick={() => router.back()}
-           className="text-slate-500 hover:text-slate-900 hover:bg-slate-200 -ml-2 px-2 sm:px-3 h-8 sm:h-9"
+           onClick={() => router.push('/groups')}
+           className="text-slate-500 hover:text-slate-900 hover:bg-slate-200 -ml-2 px-2 sm:px-3 h-8 sm:h-9 rounded-xl transition-all"
         >
           <ArrowLeft className="w-4 h-4 sm:mr-2" />
           <span className="hidden sm:inline">{t('common.back')}</span>
         </Button>
-
-        <div className="flex items-center gap-2">
-          <LanguageToggle />
-          <ThemeToggle />
-        </div>
 
         <nav className="flex items-center text-sm font-medium text-slate-500 overflow-hidden">
           <Link href="/groups" className="hover:text-slate-900 dark:hover:text-slate-200 transition-colors whitespace-nowrap">
             {t('common.home')}
           </Link>
           <ChevronRight className="w-4 h-4 mx-0.5 sm:mx-1 text-slate-400 shrink-0" />
-          <span className="text-slate-900 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md truncate max-w-[150px] sm:max-w-none">{group.name}</span>
+          <span className="text-slate-900 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md truncate max-w-[150px] sm:max-w-none font-semibold">
+            {initialGroup?.name || '...'}
+          </span>
         </nav>
       </div>
 
       {/* Group Header */}
-      <div className="bg-card dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 shadow-sm transition-all">
+      <div className="bg-card dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 shadow-sm transition-all">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
           <div className="space-y-1">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">{group.name}</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
+              {initialGroup?.name}
+              {isGuest && (
+                <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800">
+                  Guest
+                </span>
+              )}
+            </h1>
             <p className="text-sm text-muted-foreground">
-              {new Date(group.created_at).toLocaleDateString(language === 'tr' ? 'tr-TR' : 'en-US', {
+              {initialGroup && new Date(initialGroup.created_at).toLocaleDateString(language === 'tr' ? 'tr-TR' : 'en-US', {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -332,7 +388,68 @@ export default function GroupClientPage(props: { group: any, participants: any[]
                     <div className="font-bold text-lg text-foreground">
                       {formatCurrency(exp.amount, language === 'tr' ? 'tr-TR' : 'en-US', exp.currency || 'TRY')}
                     </div>
-                    <div className="flex gap-2">
+                     <div className="flex gap-2">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-9 px-2 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all flex items-center gap-2 group"
+                          title={t('group_details.participants')}
+                        >
+                          <div className="relative">
+                            <Users className="h-4 w-4 text-slate-500 group-hover:text-blue-500 transition-colors" />
+                            <span className="absolute -top-1.5 -right-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-blue-600 text-[8px] font-bold text-white ring-1 ring-white dark:ring-slate-900 shadow-sm">
+                              {exp.splits?.length || 0}
+                            </span>
+                          </div>
+                          <ChevronDown className="h-3 w-3 text-slate-400 group-hover:text-slate-600 transition-colors" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-56 p-2 rounded-2xl dark:bg-slate-900 dark:border-slate-800 shadow-2xl border-slate-200 p-1" align="end">
+                        <div className="px-2 py-1.5 border-b dark:border-slate-800 mb-1 flex justify-between items-center">
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{t('group_details.participants')}</span>
+                          <button 
+                            onClick={() => updateSplitsMutation.mutate({ expenseId: exp.id, participantIds: participants.map((p: any) => p.id) })}
+                            className="text-[9px] font-extrabold text-blue-600 hover:text-blue-700 dark:text-blue-400 uppercase"
+                          >
+                            {t('common.select_all')}
+                          </button>
+                        </div>
+                        <div className="max-h-[200px] overflow-y-auto space-y-1 p-1 scrollbar-hide">
+                          {participants.map((p: any) => {
+                            const isSelected = exp.splits?.some((s: any) => s.participant_id === p.id);
+                            return (
+                              <div 
+                                key={p.id}
+                                className={cn(
+                                  "flex items-center space-x-3 p-1.5 rounded-xl transition-colors cursor-pointer",
+                                  isSelected ? "bg-blue-50/50 dark:bg-blue-900/10" : "hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                                )}
+                                onClick={() => {
+                                  const currentIds = exp.splits?.map((s: any) => s.participant_id) || [];
+                                  let newIds;
+                                  if (isSelected) {
+                                    if (currentIds.length <= 1) return; // Prevent empty split
+                                    newIds = currentIds.filter((id: string) => id !== p.id);
+                                  } else {
+                                    newIds = [...currentIds, p.id];
+                                  }
+                                  updateSplitsMutation.mutate({ expenseId: exp.id, participantIds: newIds });
+                                }}
+                              >
+                                <Checkbox 
+                                  checked={isSelected}
+                                  className="rounded-md h-4 w-4 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                                />
+                                <span className="text-xs font-medium truncate text-foreground">{p.display_name}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+
                    <Button
                      variant="outline"
                      size="sm"
@@ -340,7 +457,7 @@ export default function GroupClientPage(props: { group: any, participants: any[]
                        setEditingExpense(exp);
                        setExpenseModalOpen(true);
                      }}
-                     className="text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700 dark:text-blue-400 dark:border-blue-700 dark:hover:bg-blue-900/20 dark:hover:text-blue-300"
+                     className="text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700 dark:text-blue-400 dark:border-blue-700 dark:hover:bg-blue-900/20 dark:hover:text-blue-300 rounded-lg shadow-sm"
                    >
                      {t('common.edit')}
                    </Button>
@@ -395,7 +512,7 @@ export default function GroupClientPage(props: { group: any, participants: any[]
               {editingExpense ? t('forms.editing') : t('group_details.new_expense')}
             </DialogTitle>
           </DialogHeader>
-          <ExpenseForm groupId={group.id} participants={participants} />
+          <ExpenseForm groupId={groupId} participants={participants} isGuest={isGuest} />
         </DialogContent>
       </Dialog>
     </div>

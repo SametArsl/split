@@ -22,15 +22,21 @@ export const metadata: Metadata = {
   description: "Hesap & Borç Yönetimi",
 };
 
-export default function RootLayout({
+import { Navbar } from "@/components/ui/navbar";
+import { createServer } from "@/lib/supabase-server";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createServer();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
     <html lang="tr" suppressHydrationWarning>
       <body
-        className={`${plusJakartaSans.variable} ${geistMono.variable} antialiased`}
+        className={`${plusJakartaSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}
       >
         <ThemeProvider
           attribute="class"
@@ -40,7 +46,8 @@ export default function RootLayout({
         >
           <LanguageProvider>
             <Providers>
-              {children}
+              <Navbar user={user} />
+              <main>{children}</main>
             </Providers>
           </LanguageProvider>
         </ThemeProvider>

@@ -11,7 +11,8 @@
     "loading": "Yükleniyor...",
     "confirm_delete": "Emin misiniz?",
     "error": "Hata",
-    "success": "Başarılı"
+    "success": "Başarılı",
+    "select_all": "Tümünü Seç"
   },
   "auth": {
     "login_title": "Split'e Giriş Yap",
@@ -57,7 +58,8 @@
     "group_name": "Grup Adı",
     "group_placeholder": "Örn: Antalya Tatili",
     "editing": "Harcamayı Düzenle",
-    "saving": "Kaydediliyor..."
+    "saving": "Kaydediliyor...",
+    "who_will_pay": "Kimler Ödeyecek?"
   },
   "errors": {
     "invalid_expense": "Geçersiz harcama verisi.",
@@ -75,5 +77,23 @@
     "member_add_error": "Katılımcı eklenemedi",
     "login_failed": "Belirtilen bilgiler hatalı veya e-posta onaylanmamış.",
     "register_failed": "Kayıt oluşturulamadı"
+  },
+  "navbar": {
+    "groups": "Gruplar",
+    "login": "Giriş Yap",
+    "register": "Kayıt Ol"
+  },
+  "landing": {
+    "hero_title": "Harcamaları Bölüşmek Artık Çok Kolay",
+    "hero_subtitle": "Arkadaşlarınla seyahat et, akşam yemeğine çık veya ev arkadaşlarınla masrafları paylaş. SplitApp her şeyi senin için hesaplar.",
+    "get_started": "Hemen Başla",
+    "continue_guest": "Kayıt Olmadan Dene",
+    "features_title": "Neden SplitApp?",
+    "feat_1_title": "Hızlı ve Kolay",
+    "feat_1_desc": "Saniyeler içinde grup oluştur ve masraf ekle.",
+    "feat_2_title": "Çoklu Para Birimi",
+    "feat_2_desc": "₺, $ veya € ile harcama yap, kur farkını dert etme.",
+    "feat_3_title": "Her Cihazda",
+    "feat_3_desc": "Mobil uyumlu yapısıyla her an yanında."
   }
 }

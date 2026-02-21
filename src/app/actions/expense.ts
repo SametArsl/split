@@ -257,3 +257,41 @@ export async function updateExpense(groupId: string, expenseId: string, rawData:
   revalidatePath(`/groups/${groupId}`);
   return { success: true };
 }
+
+export async function updateExpenseSplits(groupId: string, expenseId: string, participantIds: string[]) {
+  if (participantIds.length === 0) return { error: 'errors.at_least_one_participant' };
+
+  const supabase = await createServer();
+
+  // 1. Fetch current expense amount
+  const { data: expense, error: fetchError } = await supabase
+    .from('expenses')
+    .select('amount')
+    .eq('id', expenseId)
+    .single();
+
+  if (fetchError || !expense) return { error: 'errors.db_error_expense_delete' };
+
+  const amountInCents = expense.amount;
+  const splitAmount = Math.round(amountInCents / participantIds.length);
+
+  // 2. Delete old splits
+  await supabase
+    .from('expense_splits')
+    .delete()
+    .eq('expense_id', expenseId);
+
+  // 3. Insert new splits
+  const splitsToInsert = participantIds.map(pid => ({
+    expense_id: expenseId,
+    participant_id: pid,
+    amount_owed: splitAmount
+  }));
+
+  const { error: splitError } = await supabase.from('expense_splits').insert(splitsToInsert);
+  
+  if (splitError) return { error: 'errors.split_update_error' };
+
+  revalidatePath(`/groups/${groupId}`);
+  return { success: true };
+}

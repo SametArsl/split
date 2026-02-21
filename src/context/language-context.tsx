@@ -3,8 +3,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import tr from '@/locales/tr.json'
 import en from '@/locales/en.json'
+import de from '@/locales/de.json'
 
-type Language = 'tr' | 'en'
+type Language = 'tr' | 'en' | 'de'
 type Translations = typeof tr
 
 interface LanguageContextType {
@@ -15,7 +16,7 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
-const translations: Record<Language, any> = { tr, en }
+const translations: Record<Language, any> = { tr, en, de }
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>('tr')
@@ -23,8 +24,17 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const savedLang = localStorage.getItem('lang') as Language
-    if (savedLang && (savedLang === 'tr' || savedLang === 'en')) {
+    
+    if (savedLang && (savedLang === 'tr' || savedLang === 'en' || savedLang === 'de')) {
       setLanguageState(savedLang)
+    } else {
+      // Auto-detect browser language
+      const browserLang = navigator.language.split('-')[0] as Language
+      if (['tr', 'en', 'de'].includes(browserLang)) {
+        setLanguageState(browserLang)
+      } else {
+        setLanguageState('en') // Default fallback for international guests
+      }
     }
     setMounted(true)
   }, [])

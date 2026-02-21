@@ -19,11 +19,14 @@ import {
 } from '@/components/ui/form';
 import { useTranslation } from '@/context/language-context';
 
+import { guestStorage } from '@/lib/guest-storage';
+
 interface CreateGroupFormProps {
   onSuccess?: (groupId: string) => void;
+  isGuest?: boolean;
 }
 
-export function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
+export function CreateGroupForm({ onSuccess, isGuest }: CreateGroupFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useTranslation();
@@ -39,6 +42,19 @@ export function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
     setIsSubmitting(true);
     setError(null);
     
+    if (isGuest) {
+      try {
+        const newGroup = guestStorage.addGroup(data.name);
+        setIsSubmitting(false);
+        form.reset();
+        onSuccess?.(newGroup.id);
+      } catch (e: any) {
+        setError(e.message || 'common.error');
+        setIsSubmitting(false);
+      }
+      return;
+    }
+
     // What? Call the Next.js server action to interact with Supabase securely.
     const result = await createGroup(data);
     

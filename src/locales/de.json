@@ -1,0 +1,99 @@
+{
+  "common": {
+    "logout": "Abmelden",
+    "back": "Zurück",
+    "home": "Startseite",
+    "add": "Hinzufügen",
+    "save": "Speichern",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "cancel": "Abbrechen",
+    "loading": "Laden...",
+    "confirm_delete": "Sind Sie sicher?",
+    "error": "Fehler",
+    "success": "Erfolgreich",
+    "select_all": "Alle auswählen"
+  },
+  "auth": {
+    "login_title": "Bei Split anmelden",
+    "login_subtitle": "Melden Sie sich an, um Ihre Ausgaben zu verwalten",
+    "register_title": "Bei Split registrieren",
+    "register_subtitle": "Erstellen Sie ein Konto, um Ausgaben zu teilen",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "fullname": "Vollständiger Name",
+    "no_account": "Noch kein Konto?",
+    "has_account": "Bereits ein Konto?",
+    "login": "Anmelden",
+    "register": "Registrieren"
+  },
+  "groups": {
+    "title": "Meine Gruppen",
+    "description": "Verwalte deine Gruppen und füge Ausgaben hinzu.",
+    "new_group": "Neue Gruppe erstellen",
+    "no_groups": "Du hast noch keine Gruppen",
+    "no_groups_desc": "Erstelle eine Gruppe, um Ausgaben zu teilen.",
+    "created_at": "erstellt am"
+  },
+  "group_details": {
+    "participants": "Teilnehmer",
+    "add_ghost": "Mitglied hinzufügen (Nicht registriert)",
+    "ghost_placeholder": "Name (z.B. Hans)",
+    "settlements_title": "Wer schuldet wem was?",
+    "no_debts": "Keine Schulden in der Gruppe oder alles beglichen.",
+    "pays_to": "bezahlt an",
+    "expenses_title": "Ausgaben",
+    "new_expense": "Neue Ausgabe",
+    "no_expenses": "Noch keine Ausgaben.",
+    "paid_by": "Bezahlt von",
+    "total_expense": "Gesamtausgaben",
+    "currency_debts": "Schulden"
+  },
+  "forms": {
+    "expense_description": "Wofür war es?",
+    "expense_placeholder": "z.B. Abendessen",
+    "amount": "Betrag",
+    "currency": "Währung",
+    "payer": "Wer hat bezahlt?",
+    "group_name": "Gruppenname",
+    "group_placeholder": "z.B. Urlaub 2024",
+    "editing": "Ausgabe bearbeiten",
+    "saving": "Speichern...",
+    "who_will_pay": "Wer bezahlt mit?"
+  },
+  "errors": {
+    "invalid_expense": "Ungültige Ausgabendaten.",
+    "expense_save_error": "Ausgabe konnte nicht gespeichert werden.",
+    "add_member_error": "Mitglied konnte nicht hinzugefügt werden.",
+    "delete_participant_has_expenses": "Mitglied kann nicht gelöscht werden, da es bezahlte Ausgaben hat.",
+    "delete_participant_has_splits": "Mitglied kann nicht gelöscht werden, da es Teil einer Ausgabe ist.",
+    "db_error_member_delete": "Datenbankfehler: Mitglied konnte nicht gelöscht werden.",
+    "db_error_expense_delete": "Datenbankfehler: Ausgabe konnte nicht gelöscht werden.",
+    "expense_update_error": "Ausgabe konnte nicht aktualisiert werden.",
+    "split_update_error": "Aufteilung konnte nicht aktualisiert werden.",
+    "invalid_group_name": "Ungültiger Gruppenname.",
+    "auth_required": "Anmeldung erforderlich.",
+    "group_create_error": "Gruppe konnte nicht erstellt werden",
+    "member_add_error": "Teilnehmer konnte nicht hinzugefügt werden",
+    "login_failed": "Ungültige Anmeldedaten oder E-Mail nicht bestätigt.",
+    "register_failed": "Konto konnte nicht erstellt werden"
+  },
+  "navbar": {
+    "groups": "Gruppen",
+    "login": "Anmelden",
+    "register": "Registrieren"
+  },
+  "landing": {
+    "hero_title": "Ausgaben teilen leicht gemacht",
+    "hero_subtitle": "Reisen Sie mit Freunden, gehen Sie essen oder teilen Sie die Kosten mit Mitbewohnern. SplitApp berechnet alles für Sie.",
+    "get_started": "Jetzt starten",
+    "continue_guest": "Als Gast testen",
+    "features_title": "Warum SplitApp?",
+    "feat_1_title": "Schnell und Einfach",
+    "feat_1_desc": "Erstellen Sie Gruppen und fügen Sie Ausgaben in Sekunden hinzu.",
+    "feat_2_title": "Multi-Währung",
+    "feat_2_desc": "Geben Sie in ₺, $ oder € aus, machen Sie sich keine Sorgen um Wechselkurse.",
+    "feat_3_title": "Jedes Gerät",
+    "feat_3_desc": "Immer dabei mit seiner mobilkompatiblen Struktur."
+  }
+}

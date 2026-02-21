@@ -11,7 +11,8 @@
     "loading": "Loading...",
     "confirm_delete": "Are you sure?",
     "error": "Error",
-    "success": "Success"
+    "success": "Success",
+    "select_all": "Select All"
   },
   "auth": {
     "login_title": "Login to Split",
@@ -57,7 +58,8 @@
     "group_name": "Group Name",
     "group_placeholder": "e.g. Antalya Trip",
     "editing": "Edit Expense",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "who_will_pay": "Split with?"
   },
   "errors": {
     "invalid_expense": "Invalid expense data.",
@@ -75,5 +77,23 @@
     "member_add_error": "Failed to add participant",
     "login_failed": "Invalid credentials or email not confirmed.",
     "register_failed": "Failed to create account"
+  },
+  "navbar": {
+    "groups": "Groups",
+    "login": "Login",
+    "register": "Register"
+  },
+  "landing": {
+    "hero_title": "Splitting Expenses Made Easy",
+    "hero_subtitle": "Travel with friends, go out for dinner, or share costs with roommates. SplitApp calculates everything for you.",
+    "get_started": "Get Started",
+    "continue_guest": "Try as Guest",
+    "features_title": "Why SplitApp?",
+    "feat_1_title": "Fast and Easy",
+    "feat_1_desc": "Create groups and add expenses in seconds.",
+    "feat_2_title": "Multi-Currency",
+    "feat_2_desc": "Spend in ₺, $ or €, don't worry about exchange rates.",
+    "feat_3_title": "Every Device",
+    "feat_3_desc": "Always with you with its mobile-compatible structure."
   }
 }

@@ -1,10 +1,15 @@
 import { getGroups } from '@/app/actions/group';
 import { GroupsClientPage } from './client-page';
+import { createServer } from '@/lib/supabase-server';
 
-// What? The main dashboard page displaying a list of all groups the user belongs to.
-// Why? It acts as the central hub after login. It's a Server Component, so it fetches data directly from the DB on the server before rendering.
 export default async function GroupsPage() {
-  const groups = await getGroups();
+  const supabase = await createServer();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  return <GroupsClientPage initialGroups={groups} />;
+  if (!user) {
+    return <GroupsClientPage initialGroups={[]} isGuest={true} />;
+  }
+
+  const groups = await getGroups();
+  return <GroupsClientPage initialGroups={groups} isGuest={false} />;
 }
