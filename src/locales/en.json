@@ -1,0 +1,79 @@
+{
+  "common": {
+    "logout": "Logout",
+    "back": "Back",
+    "home": "Home",
+    "add": "Add",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "confirm_delete": "Are you sure?",
+    "error": "Error",
+    "success": "Success"
+  },
+  "auth": {
+    "login_title": "Login to Split",
+    "login_subtitle": "Sign in to manage your expenses",
+    "register_title": "Register to Split",
+    "register_subtitle": "Create a new account to start managing your expenses",
+    "email": "Email",
+    "password": "Password",
+    "fullname": "Full Name",
+    "no_account": "Don't have an account?",
+    "has_account": "Already have an account?",
+    "login": "Login",
+    "register": "Register"
+  },
+  "groups": {
+    "title": "My Groups",
+    "description": "Manage your expense groups and add new expenses.",
+    "new_group": "Create New Group",
+    "no_groups": "You have no groups",
+    "no_groups_desc": "Start splitting expenses by creating a new group now.",
+    "created_at": "created on"
+  },
+  "group_details": {
+    "participants": "Participants",
+    "add_ghost": "Add Member (Not registered in system)",
+    "ghost_placeholder": "Member name (e.g. John)",
+    "settlements_title": "Who Owes Who?",
+    "no_debts": "No debts in the group yet or everyone is settled.",
+    "pays_to": "should pay to",
+    "expenses_title": "Expenses",
+    "new_expense": "Add New Expense",
+    "no_expenses": "No expenses added yet.",
+    "paid_by": "Paid by",
+    "total_expense": "Total Expense",
+    "currency_debts": "Debts"
+  },
+  "forms": {
+    "expense_description": "What was it for?",
+    "expense_placeholder": "e.g. Dinner",
+    "amount": "Amount",
+    "currency": "Currency",
+    "payer": "Who Paid?",
+    "group_name": "Group Name",
+    "group_placeholder": "e.g. Antalya Trip",
+    "editing": "Edit Expense",
+    "saving": "Saving..."
+  },
+  "errors": {
+    "invalid_expense": "Invalid expense data.",
+    "expense_save_error": "Failed to save expense.",
+    "add_member_error": "Failed to add member.",
+    "delete_participant_has_expenses": "You cannot delete this person because they have paid expenses. Delete the expenses first.",
+    "delete_participant_has_splits": "You cannot delete this person because they are part of an expense (they owe money). Update the expense first.",
+    "db_error_member_delete": "Database error: Failed to delete member.",
+    "db_error_expense_delete": "Database error: Failed to delete expense.",
+    "expense_update_error": "Failed to update expense (may be a permission issue).",
+    "split_update_error": "Failed to update expense split.",
+    "invalid_group_name": "Invalid group name.",
+    "auth_required": "You need to log in.",
+    "group_create_error": "Failed to create group",
+    "member_add_error": "Failed to add participant",
+    "login_failed": "Invalid credentials or email not confirmed.",
+    "register_failed": "Failed to create account"
+  }
+}

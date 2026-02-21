@@ -1,0 +1,79 @@
+{
+  "common": {
+    "logout": "Çıkış Yap",
+    "back": "Geri",
+    "home": "Ana Sayfa",
+    "add": "Ekle",
+    "save": "Kaydet",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "cancel": "İptal",
+    "loading": "Yükleniyor...",
+    "confirm_delete": "Emin misiniz?",
+    "error": "Hata",
+    "success": "Başarılı"
+  },
+  "auth": {
+    "login_title": "Split'e Giriş Yap",
+    "login_subtitle": "Harcamalarınızı yönetmek için oturum açın",
+    "register_title": "Split'e Kayıt Ol",
+    "register_subtitle": "Yeni bir hesap oluşturarak harcamalarınızı yönetmeye başlayın",
+    "email": "Email",
+    "password": "Şifre",
+    "fullname": "Ad Soyad",
+    "no_account": "Hesabın yok mu?",
+    "has_account": "Zaten hesabın var mı?",
+    "login": "Giriş Yap",
+    "register": "Kayıt Ol"
+  },
+  "groups": {
+    "title": "Gruplarım",
+    "description": "Harcama gruplarınızı yönetin ve yeni harcamalar ekleyin.",
+    "new_group": "Yeni Grup Oluştur",
+    "no_groups": "Hiç grubunuz yok",
+    "no_groups_desc": "Hemen yeni bir grup oluşturarak harcamalarınızı bölüşmeye başlayın.",
+    "created_at": "tarihinde oluşturuldu"
+  },
+  "group_details": {
+    "participants": "Katılımcılar",
+    "add_ghost": "Grup Üyesi Ekle (Sisteme Kayıtlı Olmayan)",
+    "ghost_placeholder": "Kişi adı (Örn: Can)",
+    "settlements_title": "Kim Kime Ödeyecek?",
+    "no_debts": "Grupta henüz hiç borç yok veya herkes ödeşmiş.",
+    "pays_to": "kişisine ödemeli",
+    "expenses_title": "Harcamalar",
+    "new_expense": "Yeni Harcama Ekle",
+    "no_expenses": "Henüz harcama eklenmedi.",
+    "paid_by": "Ödeyen",
+    "total_expense": "Toplam Harcama",
+    "currency_debts": "Bazında Borçlar"
+  },
+  "forms": {
+    "expense_description": "Ne için harcandı?",
+    "expense_placeholder": "Örn: Akşam Yemeği",
+    "amount": "Tutar",
+    "currency": "Birim",
+    "payer": "Kim Ödedi?",
+    "group_name": "Grup Adı",
+    "group_placeholder": "Örn: Antalya Tatili",
+    "editing": "Harcamayı Düzenle",
+    "saving": "Kaydediliyor..."
+  },
+  "errors": {
+    "invalid_expense": "Geçersiz harcama verisi.",
+    "expense_save_error": "Harcama kaydedilemedi.",
+    "add_member_error": "Kişi eklenemedi.",
+    "delete_participant_has_expenses": "Bu kişiyi silemezsiniz çünkü ödediği harcamalar var. Önce harcamaları silin.",
+    "delete_participant_has_splits": "Bu kişiyi silemezsiniz çünkü bir harcamaya ortak edilmiş (borcu var). Önce harcamayı güncelleyin.",
+    "db_error_member_delete": "Veritabanı hatası: Kişi silinemedi.",
+    "db_error_expense_delete": "Veritabanı hatası: Harcama silinemedi.",
+    "expense_update_error": "Harcama güncellenemedi (Yetki hatası olabilir).",
+    "split_update_error": "Harcama bölüşümü güncellenemedi.",
+    "invalid_group_name": "Geçersiz grup adı.",
+    "auth_required": "Oturum açmanız gerekiyor.",
+    "group_create_error": "Grup oluşturulamadı",
+    "member_add_error": "Katılımcı eklenemedi",
+    "login_failed": "Belirtilen bilgiler hatalı veya e-posta onaylanmamış.",
+    "register_failed": "Kayıt oluşturulamadı"
+  }
+}
