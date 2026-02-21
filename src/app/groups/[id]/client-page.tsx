@@ -62,18 +62,37 @@ export default function GroupClientPage({
         const localGroup = guestStorage.getGroup(groupId);
         if (!localGroup) throw new Error('Group not found');
         return { 
+          group: localGroup,
           participants: localGroup.participants, 
-          expenses: localGroup.expenses 
+          expenses: localGroup.expenses,
+          error: undefined
         };
       }
-      const { participants, expenses } = await getGroupDetails(groupId);
-      return { participants, expenses };
+      return await getGroupDetails(groupId);
     },
-    initialData: { participants: initialParticipants, expenses: initialExpenses }
+    initialData: () => {
+      if (isGuest && typeof window !== 'undefined') {
+        const localGroup = guestStorage.getGroup(groupId);
+        if (localGroup) return { 
+          group: localGroup,
+          participants: localGroup.participants, 
+          expenses: localGroup.expenses,
+          error: undefined
+        };
+      }
+      return !isGuest ? { 
+        group: initialGroup, 
+        participants: initialParticipants, 
+        expenses: initialExpenses,
+        error: undefined
+      } : null;
+    },
+    staleTime: 5000
   });
 
-  const participants = groupData.participants;
-  const expenses = groupData.expenses;
+  const group = groupData?.group || initialGroup;
+  const participants = groupData?.participants || initialParticipants || [];
+  const expenses = groupData?.expenses || initialExpenses || [];
 
   // What? Calculate debts locally based on fetched expenses
   // Why? Instead of a complex SQL view, we build the balances array and use our pure function `calculateSplit`.
@@ -260,7 +279,7 @@ export default function GroupClientPage({
           </Link>
           <ChevronRight className="w-4 h-4 mx-0.5 sm:mx-1 text-slate-400 shrink-0" />
           <span className="text-slate-900 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md truncate max-w-[150px] sm:max-w-none font-semibold">
-            {initialGroup?.name || '...'}
+            {group?.name || '...'}
           </span>
         </nav>
       </div>
@@ -270,7 +289,7 @@ export default function GroupClientPage({
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
           <div className="space-y-1">
             <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
-              {initialGroup?.name}
+              {group?.name}
               {isGuest && (
                 <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800">
                   Guest
@@ -278,7 +297,7 @@ export default function GroupClientPage({
               )}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {initialGroup && new Date(initialGroup.created_at).toLocaleDateString(language === 'tr' ? 'tr-TR' : 'en-US', {
+              {group && new Date(group.created_at).toLocaleDateString(language === 'tr' ? 'tr-TR' : 'en-US', {
                 year: "numeric",
                 month: "long",
                 day: "numeric",

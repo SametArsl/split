@@ -40,7 +40,7 @@ export function ExpenseForm({ groupId, participants, isGuest }: { groupId: strin
     resolver: zodResolver(expenseSchema),
     defaultValues: {
       description: editingExpense?.description || '',
-      amount: editingExpense ? editingExpense.amount / 100 : undefined,
+      amount: editingExpense ? editingExpense.amount / 100 : '' as any,
       currency: (editingExpense?.currency || 'TRY') as "TRY" | "USD" | "EUR", 
       payerId: editingExpense?.payer_id || participants[0]?.id || '',
     },
@@ -58,13 +58,14 @@ export function ExpenseForm({ groupId, participants, isGuest }: { groupId: strin
     } else {
       form.reset({
         description: '',
-        amount: undefined,
+        amount: '' as any,
         currency: 'TRY' as any,
         payerId: participants[0]?.id || '',
       });
       setSelectedParticipants(participants.map(p => p.id));
     }
-  }, [editingExpense, form, participants]);
+    // We only reset when the expense being edited changes or initial load
+  }, [editingExpense?.id, participants.length]); 
 
   const toggleParticipant = (id: string) => {
     setSelectedParticipants((prev: string[]) => 
@@ -84,7 +85,7 @@ export function ExpenseForm({ groupId, participants, isGuest }: { groupId: strin
                 payer_id: data.payerId,
                 splits: data.splits?.map((s: any) => ({
                     participant_id: s.participantId,
-                    amount_owed: s.amountOwed
+                    amount_owed: Math.round(s.amountOwed * 100)
                 })) || []
             });
         }
@@ -111,7 +112,7 @@ export function ExpenseForm({ groupId, participants, isGuest }: { groupId: strin
                 payer_id: data.payerId,
                 splits: data.splits?.map((s: any) => ({
                     participant_id: s.participantId,
-                    amount_owed: s.amountOwed
+                    amount_owed: Math.round(s.amountOwed * 100)
                 })) || []
             });
         }
@@ -249,9 +250,9 @@ export function ExpenseForm({ groupId, participants, isGuest }: { groupId: strin
             {participants.map(p => {
               const isSelected = selectedParticipants.includes(p.id);
               return (
-                <div 
+                <label 
                   key={p.id}
-                  onClick={() => toggleParticipant(p.id)}
+                  htmlFor={`form-participant-${p.id}`}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all cursor-pointer group",
                     isSelected
@@ -263,7 +264,6 @@ export function ExpenseForm({ groupId, participants, isGuest }: { groupId: strin
                     id={`form-participant-${p.id}`}
                     checked={isSelected}
                     onCheckedChange={() => toggleParticipant(p.id)}
-                    onClick={(e) => e.stopPropagation()}
                     className="rounded-md h-4 w-4 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                   />
                   <span className={cn(
@@ -272,7 +272,7 @@ export function ExpenseForm({ groupId, participants, isGuest }: { groupId: strin
                   )}>
                     {p.display_name}
                   </span>
-                </div>
+                </label>
               );
             })}
           </div>

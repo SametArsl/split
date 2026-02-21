@@ -12,7 +12,8 @@
     "confirm_delete": "Sind Sie sicher?",
     "error": "Fehler",
     "success": "Erfolgreich",
-    "select_all": "Alle auswählen"
+    "select_all": "Alle auswählen",
+    "me": "Ich"
   },
   "auth": {
     "login_title": "Bei Split anmelden",

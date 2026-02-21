@@ -12,7 +12,8 @@
     "confirm_delete": "Emin misiniz?",
     "error": "Hata",
     "success": "Başarılı",
-    "select_all": "Tümünü Seç"
+    "select_all": "Tümünü Seç",
+    "me": "Ben"
   },
   "auth": {
     "login_title": "Split'e Giriş Yap",

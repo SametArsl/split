@@ -44,7 +44,7 @@ export function CreateGroupForm({ onSuccess, isGuest }: CreateGroupFormProps) {
     
     if (isGuest) {
       try {
-        const newGroup = guestStorage.addGroup(data.name);
+        const newGroup = guestStorage.addGroup(data.name, 'TRY', t('common.me'));
         setIsSubmitting(false);
         form.reset();
         onSuccess?.(newGroup.id);

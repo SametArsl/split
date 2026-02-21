@@ -12,7 +12,8 @@
     "confirm_delete": "Are you sure?",
     "error": "Error",
     "success": "Success",
-    "select_all": "Select All"
+    "select_all": "Select All",
+    "me": "Me"
   },
   "auth": {
     "login_title": "Login to Split",

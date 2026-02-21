@@ -1,12 +1,13 @@
 "use client"
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ThemeToggle } from './theme-toggle'
 import { LanguageToggle } from './language-toggle'
 import { useTranslation } from '@/context/language-context'
 import { Button } from './button'
-import { LogOut, LayoutDashboard, WalletCards } from 'lucide-react'
+import { LogOut, LayoutDashboard } from 'lucide-react'
 import { logout } from '@/app/(auth)/login/actions'
 import { cn } from '@/lib/utils'
 
@@ -22,12 +23,14 @@ export function Navbar({ user }: { user: any }) {
     <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md transition-all duration-300">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-6xl">
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="bg-blue-600 dark:bg-blue-500 p-2 rounded-xl text-white shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
-            <WalletCards size={20} />
-          </div>
-          <span className="font-extrabold text-xl tracking-tighter text-foreground">
-            SPLIT<span className="text-blue-600 dark:text-blue-400">APP</span>
-          </span>
+          <Image 
+            src="/logo.png" 
+            alt="SplitApp Logo" 
+            width={120} 
+            height={40} 
+            priority
+            className="h-10 w-auto group-hover:scale-105 transition-transform duration-300"
+          />
         </Link>
 
         {/* Desktop Menu */}

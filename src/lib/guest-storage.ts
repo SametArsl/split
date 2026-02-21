@@ -46,14 +46,14 @@ export const guestStorage = {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(groups));
   },
 
-  addGroup: (name: string, currency: string = 'TRY'): GuestGroup => {
+  addGroup: (name: string, currency: string = 'TRY', creatorName: string = 'Me'): GuestGroup => {
     const groups = guestStorage.getGroups();
     const newGroup: GuestGroup = {
       id: crypto.randomUUID(),
       name,
       currency,
       created_at: new Date().toISOString(),
-      participants: [{ id: 'guest-me', display_name: 'Me' }], // Default participant
+      participants: [{ id: 'guest-me', display_name: creatorName }], // Localized default participant
       expenses: []
     };
     guestStorage.saveGroups([newGroup, ...groups]);
@@ -61,7 +61,11 @@ export const guestStorage = {
   },
 
   getGroup: (id: string): GuestGroup | undefined => {
-    return guestStorage.getGroups().find(g => g.id === id);
+    const group = guestStorage.getGroups().find(g => g.id === id);
+    if (group && group.participants.length === 0) {
+      group.participants = [{ id: 'guest-me', display_name: 'Me' }];
+    }
+    return group;
   },
 
   addParticipant: (groupId: string, name: string): GuestParticipant => {

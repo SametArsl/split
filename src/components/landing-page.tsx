@@ -1,9 +1,10 @@
 "use client"
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/context/language-context'
-import { WalletCards, Zap, Globe, Smartphone, ArrowRight, Users, ShieldCheck, Languages } from 'lucide-react'
+import { Zap, Globe, Smartphone, ArrowRight, Users, ShieldCheck, Languages } from 'lucide-react'
 
 export function LandingPage() {
   const { t } = useTranslation()
@@ -17,6 +18,21 @@ export function LandingPage() {
         <div className="absolute bottom-0 -right-4 w-72 h-72 bg-purple-400/20 rounded-full blur-3xl" />
         
         <div className="container px-4 mx-auto max-w-6xl text-center relative z-10">
+          <div className="flex justify-center mb-10 animate-in fade-in zoom-in duration-1000">
+            <div className="relative p-1 rounded-[2rem] bg-gradient-to-tr from-blue-500 to-indigo-600 shadow-2xl shadow-blue-500/20">
+              <div className="bg-white dark:bg-slate-900 rounded-[1.8rem] p-4">
+                <Image 
+                  src="/logo.png" 
+                  alt="SplitApp Logo" 
+                  width={200} 
+                  height={60} 
+                  priority
+                  className="h-14 w-auto sm:h-20"
+                />
+              </div>
+            </div>
+          </div>
+          
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-foreground mb-6 leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
             {t('landing.hero_title')}
           </h1>

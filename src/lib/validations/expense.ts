@@ -18,12 +18,12 @@ export const expenseSchema = z.object({
     message: "Lütfen geçerli bir para birimi seçin.",
   }),
   
-  payerId: z.string().uuid({ message: "Lütfen bir ödeyen seçin." }),
+  payerId: z.string().min(1, { message: "Lütfen bir ödeyen seçin." }),
   
   // What? Array of specific participants and how much they owe.
   // Why? To support custom scenarios where an expense is NOT split equally among everyone (e.g., "I ate the burger, you just had fries").
   splits: z.array(z.object({
-    participantId: z.string().uuid(),
+    participantId: z.string().min(1),
     amountOwed: z.number().min(0), 
   })).optional(),
 });
