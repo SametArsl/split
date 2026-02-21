@@ -93,7 +93,13 @@
     "feat_1_desc": "Erstellen Sie Gruppen und fügen Sie Ausgaben in Sekunden hinzu.",
     "feat_2_title": "Multi-Währung",
     "feat_2_desc": "Geben Sie in ₺, $ oder € aus, machen Sie sich keine Sorgen um Wechselkurse.",
-    "feat_3_title": "Jedes Gerät",
-    "feat_3_desc": "Immer dabei mit seiner mobilkompatiblen Struktur."
+    "feat_3_title": "Flexible Aufteilung",
+    "feat_3_desc": "Teilen Sie Ausgaben nur mit ausgewählten Teilnehmern.",
+    "feat_4_title": "Keine Anmeldung",
+    "feat_4_desc": "Sofort starten, Daten im Browser speichern.",
+    "feat_5_title": "Mehrsprachig",
+    "feat_5_desc": "Verfügbar in Deutsch, Englisch und Türkisch.",
+    "feat_6_title": "Jedes Gerät",
+    "feat_6_desc": "Immer dabei mit seiner mobilkompatiblen Struktur."
   }
 }

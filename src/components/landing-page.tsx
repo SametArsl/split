@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/context/language-context'
-import { WalletCards, Zap, Globe, Smartphone, ArrowRight } from 'lucide-react'
+import { WalletCards, Zap, Globe, Smartphone, ArrowRight, Users, ShieldCheck, Languages } from 'lucide-react'
 
 export function LandingPage() {
   const { t } = useTranslation()
@@ -17,11 +17,6 @@ export function LandingPage() {
         <div className="absolute bottom-0 -right-4 w-72 h-72 bg-purple-400/20 rounded-full blur-3xl" />
         
         <div className="container px-4 mx-auto max-w-6xl text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 text-blue-600 dark:text-blue-400 text-sm font-medium mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <Zap size={14} />
-            <span>New: German support added!</span>
-          </div>
-          
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-foreground mb-6 leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
             {t('landing.hero_title')}
           </h1>
@@ -47,13 +42,13 @@ export function LandingPage() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-900/50">
+      <section className="py-20 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500">
         <div className="container px-4 mx-auto max-w-6xl">
           <h2 className="text-3xl font-bold text-center mb-16 text-foreground tracking-tight">
             {t('landing.features_title')}
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             <FeatureCard 
               icon={<Zap className="text-orange-500" />}
               title={t('landing.feat_1_title')}
@@ -65,9 +60,24 @@ export function LandingPage() {
               description={t('landing.feat_2_desc')}
             />
             <FeatureCard 
-              icon={<Smartphone className="text-purple-500" />}
+              icon={<Users className="text-emerald-500" />}
               title={t('landing.feat_3_title')}
               description={t('landing.feat_3_desc')}
+            />
+            <FeatureCard 
+              icon={<ShieldCheck className="text-indigo-500" />}
+              title={t('landing.feat_4_title')}
+              description={t('landing.feat_4_desc')}
+            />
+            <FeatureCard 
+              icon={<Languages className="text-red-500" />}
+              title={t('landing.feat_5_title')}
+              description={t('landing.feat_5_desc')}
+            />
+            <FeatureCard 
+              icon={<Smartphone className="text-purple-500" />}
+              title={t('landing.feat_6_title')}
+              description={t('landing.feat_6_desc')}
             />
           </div>
         </div>

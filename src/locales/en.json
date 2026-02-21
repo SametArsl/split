@@ -93,7 +93,13 @@
     "feat_1_desc": "Create groups and add expenses in seconds.",
     "feat_2_title": "Multi-Currency",
     "feat_2_desc": "Spend in ₺, $ or €, don't worry about exchange rates.",
-    "feat_3_title": "Every Device",
-    "feat_3_desc": "Always with you with its mobile-compatible structure."
+    "feat_3_title": "Flexible Splitting",
+    "feat_3_desc": "Split expenses only with selected participants, not everyone.",
+    "feat_4_title": "No Account Required",
+    "feat_4_desc": "Start using it immediately, store data in your browser.",
+    "feat_5_title": "Multi-Language",
+    "feat_5_desc": "Available in English, Turkish, and German.",
+    "feat_6_title": "Every Device",
+    "feat_6_desc": "Always with you with its mobile-compatible structure."
   }
 }
