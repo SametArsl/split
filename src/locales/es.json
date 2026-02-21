@@ -86,10 +86,10 @@
   },
   "landing": {
     "hero_title": "Dividir Gastos Nunca Fue Tan Fácil",
-    "hero_subtitle": "Viaja con amigos, sal a cenar o comparte gastos con compañeros de piso. SplitApp calcula todo por ti.",
+    "hero_subtitle": "Viaja con amigos, sal a cenar o comparte gastos con compañeros de piso. FairSplit calcula todo por ti.",
     "get_started": "Empezar",
     "continue_guest": "Probar como invitado",
-    "features_title": "¿Por qué SplitApp?",
+    "features_title": "¿Por qué FairSplit?",
     "feat_1_title": "Rápido y Fácil",
     "feat_1_desc": "Crea grupos y añade gastos en segundos.",
     "feat_2_title": "Multimoneda",
@@ -101,6 +101,9 @@
     "feat_5_title": "Multilenguaje",
     "feat_5_desc": "Disponible en inglés, turco, alemán y español.",
     "feat_6_title": "Cualquier Dispositivo",
-    "feat_6_desc": "Siempre contigo con su estructura compatible con móviles."
+    "feat_6_desc": "Siempre contigo con su estructura compatible con móviles.",
+    "cta_title": "¿Listo para dividir?",
+    "cta_subtitle": "Empieza a gestionar tus gastos de grupo como un profesional hoy mismo. Es gratis y siempre lo será.",
+    "cta_button": "Únete a FairSplit ahora"
   }
 }

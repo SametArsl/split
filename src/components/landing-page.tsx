@@ -23,7 +23,7 @@ export function LandingPage() {
               <div className="bg-white dark:bg-slate-900 rounded-[1.8rem] p-4">
                 <Image 
                   src="/logo.png" 
-                  alt="SplitApp Logo" 
+                  alt="FairSplit Logo" 
                   width={200} 
                   height={60} 
                   priority
@@ -104,11 +104,11 @@ export function LandingPage() {
         <div className="container px-4 mx-auto max-w-4xl text-center">
             <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-12 rounded-[2rem] text-white shadow-2xl relative overflow-hidden group">
                 <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none" />
-                <h3 className="text-3xl font-bold mb-4 relative z-10">Ready to split?</h3>
-                <p className="opacity-90 mb-8 max-w-md mx-auto relative z-10">Start managing your group expenses like a pro today. It's free and always will be.</p>
+                <h3 className="text-3xl font-bold mb-4 relative z-10">{t('landing.cta_title')}</h3>
+                <p className="opacity-90 mb-8 max-w-md mx-auto relative z-10">{t('landing.cta_subtitle')}</p>
                 <Link href="/register">
                     <Button size="lg" className="bg-white text-blue-700 hover:bg-slate-100 h-14 px-10 rounded-xl font-bold text-lg relative z-10 group-hover:scale-105 transition-transform">
-                        Join SplitApp Now
+                        {t('landing.cta_button')}
                     </Button>
                 </Link>
             </div>

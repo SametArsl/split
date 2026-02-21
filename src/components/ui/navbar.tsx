@@ -22,15 +22,18 @@ export function Navbar({ user }: { user: any }) {
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md transition-all duration-300">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-6xl">
-        <Link href="/" className="flex items-center gap-2 group">
+        <Link href="/" className="flex items-center gap-2.5 group">
           <Image 
             src="/logo.png" 
-            alt="SplitApp Logo" 
-            width={120} 
+            alt="FairSplit Logo" 
+            width={40} 
             height={40} 
             priority
-            className="h-10 w-auto group-hover:scale-105 transition-transform duration-300"
+            className="h-9 w-auto group-hover:scale-110 transition-transform duration-300"
           />
+          <span className="text-xl font-extrabold tracking-tighter text-foreground group-hover:text-blue-600 transition-colors duration-300">
+            FairSplit
+          </span>
         </Link>
 
         {/* Desktop Menu */}

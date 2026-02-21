@@ -86,10 +86,10 @@
   },
   "landing": {
     "hero_title": "Ausgaben teilen leicht gemacht",
-    "hero_subtitle": "Reisen Sie mit Freunden, gehen Sie essen oder teilen Sie die Kosten mit Mitbewohnern. SplitApp berechnet alles für Sie.",
+    "hero_subtitle": "Reisen Sie mit Freunden, gehen Sie essen oder teilen Sie die Kosten mit Mitbewohnern. FairSplit berechnet alles für Sie.",
     "get_started": "Jetzt starten",
     "continue_guest": "Als Gast testen",
-    "features_title": "Warum SplitApp?",
+    "features_title": "Warum FairSplit?",
     "feat_1_title": "Schnell und Einfach",
     "feat_1_desc": "Erstellen Sie Gruppen und fügen Sie Ausgaben in Sekunden hinzu.",
     "feat_2_title": "Multi-Währung",
@@ -99,8 +99,11 @@
     "feat_4_title": "Keine Anmeldung",
     "feat_4_desc": "Sofort starten, Daten im Browser speichern.",
     "feat_5_title": "Mehrsprachig",
-    "feat_5_desc": "Verfügbar in Deutsch, Englisch und Türkisch.",
+    "feat_5_desc": "Verfügbar in Deutsch, Englisch, Türkisch und Spanisch.",
     "feat_6_title": "Jedes Gerät",
-    "feat_6_desc": "Immer dabei mit seiner mobilkompatiblen Struktur."
+    "feat_6_desc": "Immer dabei mit seiner mobilkompatiblen Struktur.",
+    "cta_title": "Bereit zum Teilen?",
+    "cta_subtitle": "Verwalten Sie Ihre Gruppenausgaben noch heute wie ein Profi. Es ist kostenlos und wird es immer bleiben.",
+    "cta_button": "FairSplit jetzt beitreten"
   }
 }

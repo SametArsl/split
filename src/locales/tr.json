@@ -86,10 +86,10 @@
   },
   "landing": {
     "hero_title": "Harcamaları Bölüşmek Artık Çok Kolay",
-    "hero_subtitle": "Arkadaşlarınla seyahat et, akşam yemeğine çık veya ev arkadaşlarınla masrafları paylaş. SplitApp her şeyi senin için hesaplar.",
+    "hero_subtitle": "Arkadaşlarınla seyahat et, akşam yemeğine çık veya ev arkadaşlarınla masrafları paylaş. FairSplit her şeyi senin için hesaplar.",
     "get_started": "Hemen Başla",
     "continue_guest": "Kayıt Olmadan Dene",
-    "features_title": "Neden SplitApp?",
+    "features_title": "Neden FairSplit?",
     "feat_1_title": "Hızlı ve Kolay",
     "feat_1_desc": "Saniyeler içinde grup oluştur ve masraf ekle.",
     "feat_2_title": "Çoklu Para Birimi",
@@ -99,8 +99,11 @@
     "feat_4_title": "Kayıt Gerektirmez",
     "feat_4_desc": "Hemen kullanmaya başla, verilerini tarayıcında sakla.",
     "feat_5_title": "Çoklu Dil Desteği",
-    "feat_5_desc": "Türkçe, İngilizce ve Almanca dilleriyle global kullanıma hazır.",
+    "feat_5_desc": "Türkçe, İngilizce, Almanca ve İspanyolca dilleriyle global kullanıma hazır.",
     "feat_6_title": "Her Cihazda",
-    "feat_6_desc": "Mobil uyumlu yapısıyla her an yanında."
+    "feat_6_desc": "Mobil uyumlu yapısıyla her an yanında.",
+    "cta_title": "Bölüşmeye hazır mısın?",
+    "cta_subtitle": "Grup harcamalarınızı bugün profesyonel gibi yönetmeye başlayın. Tamamen ücretsizdir.",
+    "cta_button": "Şimdi FairSplit'e Katıl"
   }
 }

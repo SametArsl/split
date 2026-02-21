@@ -86,10 +86,10 @@
   },
   "landing": {
     "hero_title": "Splitting Expenses Made Easy",
-    "hero_subtitle": "Travel with friends, go out for dinner, or share costs with roommates. SplitApp calculates everything for you.",
+    "hero_subtitle": "Travel with friends, go out for dinner, or share costs with roommates. FairSplit calculates everything for you.",
     "get_started": "Get Started",
     "continue_guest": "Try as Guest",
-    "features_title": "Why SplitApp?",
+    "features_title": "Why FairSplit?",
     "feat_1_title": "Fast and Easy",
     "feat_1_desc": "Create groups and add expenses in seconds.",
     "feat_2_title": "Multi-Currency",
@@ -99,8 +99,11 @@
     "feat_4_title": "No Account Required",
     "feat_4_desc": "Start using it immediately, store data in your browser.",
     "feat_5_title": "Multi-Language",
-    "feat_5_desc": "Available in English, Turkish, and German.",
+    "feat_5_desc": "Available in English, Turkish, German, and Spanish.",
     "feat_6_title": "Every Device",
-    "feat_6_desc": "Always with you with its mobile-compatible structure."
+    "feat_6_desc": "Always with you with its mobile-compatible structure.",
+    "cta_title": "Ready to split?",
+    "cta_subtitle": "Start managing your group expenses like a pro today. It's free and always will be.",
+    "cta_button": "Join FairSplit Now"
   }
 }
